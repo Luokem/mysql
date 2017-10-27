@@ -1,0 +1,342 @@
+----------------------------------------------------------------------
+唯一键: UNIQUE KEY
+mysql> CREATE TABLE `teacher`(
+    -> `t_id` char(4) unique key,
+    -> `name` varchar(20),
+    -> `duty` varchar(15),
+    -> `rank` int
+    -> );
+Query OK, 0 rows affected (0.39 sec)
+
+mysql> describe `teacher`;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| t_id  | char(4)     | YES  | UNI | NULL    |       |
+| name  | varchar(20) | YES  |     | NULL    |       |
+| duty  | varchar(15) | YES  |     | NULL    |       |
+| rank  | int(11)     | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+mysql> insert into `teacher`
+    -> VALUES('0001','党老师','经理','1'),
+    ->       ('0002','梁老师','助理','2'),
+    ->       ('0003','王老师','全栈','3'),
+    ->       ('0004','杨老师','H5',null);
+Query OK, 4 rows affected (0.09 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from `teacher`;
++------+-----------+--------+------+
+| t_id | name      | duty   | rank |
++------+-----------+--------+------+
+| 0001 | 党老师    | 经理   |    1 |
+| 0002 | 梁老师    | 助理   |    2 |
+| 0003 | 王老师    | 全栈   |    3 |
+| 0004 | 杨老师    | H5     | NULL |
++------+-----------+--------+------+
+4 rows in set (0.00 sec)
+
+
+
+mysql> insert into `teacher`(`t_id`,`name`)
+    -> values('0004','take');
+ERROR 1062 (23000): Duplicate entry '0004' for key 't_id'
+#因为有唯一键的存在’0004’出现重复报错  
+#Duplicate entry重复
+
+
+
+
+----------------------------------------------------------------------
+主键：Primary Key
+mysql> describe `teacher`;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| t_id  | char(4)     | YES  | UNI | NULL    |       |
+| name  | varchar(20) | YES  |     | NULL    |       |
+| duty  | varchar(15) | YES  |     | NULL    |       |
+| rank  | int(11)     | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+
+mysql> alter table `teacher`
+    -> modify `t_id` char(4) not null;
+Query OK, 0 rows affected (0.77 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+
+mysql> describe `teacher`;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| t_id  | char(4)     | NO   | PRI | NULL    |       |
+| name  | varchar(20) | YES  |     | NULL    |       |
+| duty  | varchar(15) | YES  |     | NULL    |       |
+| rank  | int(11)     | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+#既是一个Unique Key 又是一个Not Null的时候，那么它被当作Primary Key
+（主键：非空且唯一）
+
+
+
+
+@情况1   #修改name非空且唯一
+mysql> alter table `teacher`
+    -> modify `name` varchar(20) not null unique key;
+Query OK, 0 rows affected (1.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+mysql> describe `teacher`;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| t_id  | char(4)     | NO   | PRI | NULL    |       |
+| name  | varchar(20) | NO   | UNI | NULL    |       |
+| duty  | varchar(15) | YES  |     | NULL    |       |
+| rank  | int(11)     | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+#当一张表没有一个主键的时候，第一个出现的非空且唯一的键被视为主键。
+
+
+****************
+
+@情况2  在有非空且唯一的情况下添加primary key 主键
+mysql> alter table `teacher`
+    -> modify `name` varchar(20) primary key;
+Query OK, 0 rows affected (0.96 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+mysql> describe `teacher`;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| t_id  | char(4)     | NO   | UNI | NULL    |       |
+| name  | varchar(20) | NO   | PRI | NULL    |       |
+| duty  | varchar(15) | YES  |     | NULL    |       |
+| rank  | int(11)     | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+#主键>非空且唯一，一张表里只能出现一个主键，所以本来t_id的主键变为唯一键。
+#一张表两个主键会保错
+
+
+
+
+-----------------------------------------------------------------
+AUTO INCREMENT 字段
+我们通常希望在每次插入新记录时，自动地创建主键字段的值。
+我们可以在表中创建一个 auto-increment 字段。auto_increment 可以和主键，唯一键在一起。
+
+mysql> create table `student`(
+    -> `s_id` int primary key auto_increment, 
+    -> `name` varchar(20), 
+    -> `class` int, 
+    -> `t_id` char(4)
+    -> );
+
+
+mysql> describe `student`;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| s_id  | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(20) | YES  |     | NULL    |                |
+| class | int(11)     | YES  |     | NULL    |                |
+| t_id  | char(4)     | YES  |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+
+mysql> insert into `student`(`name`,`class`,`t_id`)
+    -> values('钟方威','1','0003'),
+    -> 	     ('伍成桂','1','0003'),
+    ->       ('吴权忠','1','0003');
+Query OK, 3 rows affected (0.04 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+
+mysql> select * from `student`;
++------+-----------+-------+------+
+| s_id | name      | class | t_id |
++------+-----------+-------+------+
+|    1 | 钟方威    |     1 | 0003 |
+|    2 | 伍成桂    |     1 | 0003 |
+|    3 | 吴权忠    |     1 | 0003 |
++------+-----------+-------+------+
+3 rows in set (0.00 sec)
+
+
+
+
+
+---------------------------------------------------------------------------
+FOREIGN KEY  外键   
+
+创建外键的时候都会有两个key，
+外键必须关联到一个key上去。
+一个是原本的KEY，
+一个是FOREIGN KEY是拿来限制的。
+一个表要引用外部数据这时候我们就要用到外键，同时要有相同的元素。
+
+
+mysql> describe `student`;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| s_id  | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(20) | YES  |     | NULL    |                |
+| class | int(11)     | YES  |     | NULL    |                |
+| t_id  | char(4)     | YES  |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+
+
+mysql> describe `teacher`;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| t_id  | char(4)     | NO   | PRI | NULL    |       |
+| name  | varchar(20) | NO   |     | NULL    |       |
+| duty  | varchar(15) | YES  |     | NULL    |       |
+| rank  | int(11)     | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+
+
+mysql> alter table `student`
+    -> add foreign key(`t_id`) references `teacher`(`t_id`);
+Query OK, 3 rows affected (1.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+
+
+mysql> describe `student`;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| s_id  | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(20) | YES  |     | NULL    |                |
+| class | int(11)     | YES  |     | NULL    |                |
+| t_id  | char(4)     | YES  | MUL | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+MUL允许多个相同的，外键属于MUL一种。
+
+
+
+删除外键：
+mysql> alter table `student`
+    -> drop column `t_id`;
+ERROR 1553 (HY000): Cannot drop index 't_id': needed in a foreign key constraint
+
+
+
+若想直接删列是不行的，要先删结构（约束名字），再删除列。
+外键是结构所以用DROP，删除外键要用约束的名字。
+约束的名字用SHOW CREATE TABLE `xxxxxxxx`\G查看
+
+
+
+
+mysql> show create table `student`\G;
+*************************** 1. row ***************************
+       Table: student
+Create Table: CREATE TABLE `student` (
+  `s_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) DEFAULT NULL,
+  `class` int(11) DEFAULT NULL,
+  `t_id` char(4) DEFAULT NULL,
+  PRIMARY KEY (`s_id`),
+  KEY `t_id` (`t_id`),
+  CONSTRAINT `student_ibfk_1` FOREIGN KEY (`t_id`) REFERENCES `teacher` (`t_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8
+1 row in set (0.00 sec)
+##CONSTRAINT 约束
+
+
+
+mysql> alter table `student`
+    -> drop foreign key `student_ibfk_1`;
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+
+只是删除结构而已，内容并没删除
+mysql> SELECT * FROM `student`;
++------+-----------+-------+------+
+| s_id | name      | class | t_id |
++------+-----------+-------+------+
+|    1 | 钟方威    |     1 | 0003 |
+|    2 | 伍成桂    |     1 | 0003 |
+|    3 | 吴权忠    |     1 | 0003 |
++------+-----------+-------+------+
+3 rows in set (0.00 sec)
+
+
+
+
+
+---------------------------------------------------------------------------
+删除键
+mysql> DESCRIBE `teacher`;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| t_id  | char(4)     | NO   | UNI | NULL    |       |
+| name  | varchar(20) | NO   | PRI | NULL    |       |
+| duty  | varchar(15) | YES  |     | NULL    |       |
+| rank  | int(11)     | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+#因为一张表只有一个主键，直接删除就好
+mysql> alter table `teacher`
+    -> drop primary key;
+Query OK, 4 rows affected (1.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+
+
+mysql> alter table `teacher`
+    -> drop key `name`;
+Query OK, 0 rows affected (0.19 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
