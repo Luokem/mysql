@@ -1,0 +1,258 @@
+查：
+SHOW显示
+查看数据库和表                
+#要加s，因为数据库和表不止一个 
+#创建文件件不用加S查看文件件要用S
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| python             |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)   #4 rows 代表4行
+
+
+------------------------------------------------------------------------------------------------------------
+
+使用数据库 （USE是使用）
+mysql> use `mysql`;	#使用mysql数据库
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed	#数据库改变
+
+
+------------------------------------------------------------------------------------------------------------
+
+创建用create database
+创建数据库：
+mysql> 
+mysql> create database `tornado`;
+Query OK, 1 row affected (0.00 sec)
+
+
+
+创建表 create table
+在外部不进入数据库情况下里建立一个表用`  `.`  `。
+mysql> create table `tornado`.`t41`(
+    -> `id` INT,
+    -> `name` VARCHAR(20),
+    -> `gender` CHAR(1)
+    -> );
+Query OK, 0 rows affected (0.36 sec)
+
+------------------------------------------------------------------------------------------------------------
+
+使用数据库 （USE是使用）
+mysql> use `tornado`;	#使用mysql数据库
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed   #数据库改变
+
+------------------------------------------------------------------------------------------------------------
+SELECT选择
+查看当前数据库 (SELECT选择)
+mysql> select database();
++------------+
+| database() |
++------------+
+| tornado    |
++------------+
+1 row in set (0.00 sec)
+
+------------------------------------------------------------------------------------------------------------
+
+查看这表如何创建表：
+#如果用；结束你会看到很乱，如果用\G你会看起来很简洁
+
+mysql> show create table `teacher`\G;
+*************************** 1. row ***************************
+       Table: teacher
+Create Table: CREATE TABLE `teacher` (
+  `t_id` char(4) DEFAULT NULL,
+  `name` varchar(20) DEFAULT NULL,
+  `duty` varchar(15) DEFAULT NULL,
+  `rank` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+1 row in set (0.00 sec)
+
+
+
+DESCRIBE描述
+描述表的结构：
+mysql> describe `t41`;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| id     | int(11)     | YES  |     | NULL    |       |
+| name   | varchar(20) | YES  |     | NULL    |       |
+| gender | char(1)     | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)             #NULL和空字符串有区别 NULL表示啥都不是，‘ ’表示空信息。
+
+------------------------------------------------------------------------------------------------------------
+
+在数据库内建立表
+mysql> create table `teacher`(
+    -> `t_id` CHAR(4),
+    -> `name` VARCHAR(20),
+    -> `duty` VARCHAR(15),
+    -> `rank` INT
+    -> );
+Query OK, 0 rows affected (0.36 sec)
+
+
+
+mysql> show tables;
++-------------------+
+| Tables_in_tornado |
++-------------------+
+| t41               |
+| teacher           |
++-------------------+
+2 rows in set (0.00 sec)
+
+------------------------------------------------------------------------------------------------------------
+
+插入用INSERT INTO
+详细式插入： #INSERT 插入#INTO 到什么里面去
+详细式插入选择什么列插入什么列
+mysql> insert into `teacher`(`t_id`,`name`,`duty`,`rank`)    
+    -> VALUES('0001','zhong','Service',1),
+    -> ('0002','wu','instructor',5)
+    -> ;
+Query OK, 2 rows affected (0.06 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+
+简约式插入：
+简约式插入所有列
+mysql> insert into `teacher`
+    -> VALUES('0003','chen','Assitant',4);
+Query OK, 1 row affected (0.05 sec)
+
+------------------------------------------------------------------------------------------------------------
+
+添加用ADD
+#ALTER          改变
+
+mysql> alter table `teacher`
+    -> ADD COLUMN `sex` INT AFTER `name`;       #AFTER `name`在name后添加`sex`列
+Query OK, 0 rows affected (0.80 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+mysql> alter table `teacher`
+    -> ADD COLUMN `sex` INT FIRST;               #FIRST  把`sex`列添加到首列
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+再查看表信息
+mysql> describe `teacher`;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| t_id  | char(4)     | YES  |     | NULL    |       |
+| name  | varchar(20) | YES  |     | NULL    |       |
+| sex   | int(11)     | YES  |     | NULL    |       |
+| duty  | varchar(15) | YES  |     | NULL    |       |
+| rank  | int(11)     | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+------------------------------------------------------------------------------------------------------------
+
+查看表数据
+mysql> select `t_id`,`name` from `teacher`;
++------+-------+
+| t_id | name  |
++------+-------+
+| 0001 | zhong |
+| 0002 | wu    |
+| 0003 | chen  |
++------+-------+
+3 rows in set (0.00 sec)
+
+
+mysql> select *  from `teacher`;
++------+-------+------+------------+------+
+| t_id | name  | sex  | duty       | rank |
++------+-------+------+------------+------+
+| 0001 | zhong | NULL | Service    |    1 |
+| 0002 | wu    | NULL | instructor |    5 |
+| 0003 | chen  | NULL | Assitant   |    4 |
++------+-------+------+------------+------+
+3 rows in set (0.00 sec)
+
+
+------------------------------------------------------------------------------------------------------------
+MODIFY修改
+
+mysql> ALTER TABLE `teacher` MODIFY `sex` VARCHAR(10) ;
+Query OK, 3 rows affected (1.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+
+mysql> describe `teacher`;
+
+------------------------------------------------------------------------------------------------------------
+
+改：
+更新数据用UPDATE   
+改动数据用ALTER  
+修改类型： NULL 和 DEFAULT 用MODIFY
+#SET设置  后面不用加逗号；更新不一样的内容要分开写
+
+
+全部修改 
+mysql> update `teacher`
+    -> set `sex`='boy'     #SET选定我们的列,SET是改变后的内容
+    -> where 1;		   #WHERE选定我们的行  1为真
+Query OK, 3 rows affected (0.06 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+
+部分修改（单行）
+mysql> update `teacher`
+    -> set `sex` = 'gril'
+    -> where `t_id`= '0002';
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+部分修改（多行）
+mysql> update `teacher`
+    -> set `sex`='gril'
+    -> where `t_id` like '%000%'
+    -> ;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 3  Changed: 1  Warnings: 0
+
+
+------------------------------------------------------------------------------------------------------------
+删除
+
+删除行
+mysql> delete from `teacher`
+    -> where `t_id`='0003';
+Query OK, 1 row affected (0.05 sec)
+
+删除列
+mysql> alter table `teacher`
+    -> drop column `sex`;
+Query OK, 0 rows affected (0.76 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+删除表
+mysql> drop table `teacher`;
+Query OK, 0 rows affected (0.20 sec)
+
+删除库
+mysql> drop database `tornado`;
+Query OK, 1 row affected (0.24 sec)
+
+
+
+
