@@ -1,0 +1,47 @@
+{% extends 10_lesson.html %}
+
+
+
+{% block Title %} H5全栈开发  {% end %}
+
+
+<!--继承body块-->
+<!--摸板中使用类或函数的方式-->
+{% block body %}
+    {# 欢迎{{name}}登录<br> #}
+    {# 时间戳：{{time.time()}}<br> #}
+    {# {% for a in bb %} #}
+        {# <a href="{{a[0]}}">{{a[1]}}  {{a[0]}}</a><br> #}
+    {# {% end %}<br> #}
+
+
+{{'------------------------------------------------------------------'}}<br>
+
+    {# {{ aa() }}<br> #}
+    {# {{ Jisun().sub(9,7) }}<br> #}
+
+
+{{'------------------------------------------------------------------'}}<br>
+<!--在html文件钟通过import  导入方法和类-->
+
+    {# {% import time %}<br> #}
+    {# {{ time.time() }}<br> #}
+
+{{'------------------------------------------------------------------'}}<br>
+<!-- 导入自定义类 -->
+
+    {% from ten_lesson_base import add,JiSuan %}
+        {{ add(1,5) }}<br>
+        {{ JiSuan().add(7,1) }}<br>
+        {{ JiSuan().sub(7,1) }}<br>
+        {{ JiSuan().data() }}<br>
+        {{ JiSuan().args(namelist) }}<br>
+
+        {% for a in JiSuan().args(namelist) %}
+            {{ a }}
+        {% end %}
+
+{% end %}
+
+
+
