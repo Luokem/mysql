@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>welcome here</h1>
+    {{ name }}<br />
+    {{time.time()}} <br />
+    {% raw html %} <br>
+    {{  html }} <br>
+    {% autoescape None %}
+    {% for i in classs %}
+
+        <a href="{{i[0]}}"> {{i[1]}}  {% raw i[0] %} </a> <br />
+
+    {% end %}
+
+</body>
+</html>

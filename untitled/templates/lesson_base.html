@@ -1,0 +1,34 @@
+{% extends "lesson1.html" %}
+
+{% block Title %} 继承 {% end %}
+
+{% block body %}
+
+    欢迎{{name}} 登录<br>
+
+    {# 时间: {{time.time()}}<br> #}
+
+    {% import time %}
+    {{time.time()}}<br>
+
+    {% for i in classs %}
+    <a href ="{{i[0]}}">{{i[1]}}  </a><br>
+
+    {% end %}
+
+
+    {{aa()}}<br>
+
+    {# {{jisuan().sub(9,2)}} <br> #}
+
+
+        {% from jisuan import add, JiSuan %}
+        {{add(1,5)}}<br>
+        {{JiSuan().add(7,1)}}<br>
+        {{JiSuan().data()}}<br>
+        {{JiSuan().args(list)}}<br>
+        {% for a in JiSuan().args(list) %}
+            {{ a }}<br>
+        {% end %}
+
+{% end %}
