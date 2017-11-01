@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<form method="post" action="/login">                 <!--action是返回的路由映射-->
+    {% module xsrf_form_html() %}
+    <p>用户名<input type="text" name="name"></p>
+    <p>密码<input type="text" name="password"></p>
+    <input type="submit">
+</form>
+
+
+</body>
+</html>
